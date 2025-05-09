@@ -59,7 +59,7 @@ export default function Step5GenderScreen() {
 
       <View className="absolute bottom-0 left-0 right-0 p-10 bg-white border-t border-gray-200">
         <TouchableOpacity
-          className={`py-4 rounded-full items-center ${selectedGender ? 'bg-gray-900' : 'bg-gray-300'}`}
+          className={`p-4 rounded-full items-center ${selectedGender ? 'bg-[#3A82F6]' : 'bg-gray-300'}`}
           onPress={goToNextStep}
           disabled={!selectedGender}
         >

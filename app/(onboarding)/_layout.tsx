@@ -7,6 +7,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-na
 // --- Constants ---
 export const ONBOARDING_STEPS = [ // Order matters for navigation and finding index
   'step_height_weight', // New 1st (Height & Weight)
+  'step_date_of_birth', // Added new screen
   'step5_gender',     // New 2nd
   'step4_workouts',   // New 3rd
   'step3_source',     // New 4th
@@ -20,6 +21,7 @@ export const ONBOARDING_STEPS = [ // Order matters for navigation and finding in
 // Define specifically the steps that contribute to the progress bar calculation
 export const PROGRESS_BAR_STEPS = [
   'step_height_weight', // New 1st
+  'step_date_of_birth', // Added new screen
   'step5_gender',
   'step4_workouts',
   'step3_source',
@@ -29,7 +31,7 @@ export const PROGRESS_BAR_STEPS = [
   'step8_accomplishments',
   'step9_obstacles',
 ];
-const TOTAL_PROGRESS_STEPS = PROGRESS_BAR_STEPS.length; // Now 9 based on the actual steps
+const TOTAL_PROGRESS_STEPS = PROGRESS_BAR_STEPS.length; // Now 10 based on the actual steps
 
 // --- Custom Header Component ---
 function OnboardingHeader() {
@@ -60,7 +62,7 @@ function OnboardingHeader() {
     currentStepName,
     currentOnboardingIndex, // Keep overall index for context
     currentProgressStepIndex, // Index used for progress calculation (-1 if not a progress step)
-    TOTAL_PROGRESS_STEPS, // Should be 9
+    TOTAL_PROGRESS_STEPS, // Should be 10
     calculatedProgress: progressValue,
   });
   // --- END DEBUG LOGS ---
@@ -113,6 +115,7 @@ export default function OnboardingLayout() {
     >
        {/* Define screens within the onboarding flow */}
        <Stack.Screen name="step_height_weight" />
+       <Stack.Screen name="step_date_of_birth" /> {/* Added new screen */}
        <Stack.Screen name="step5_gender" />
        <Stack.Screen name="step4_workouts" />
        <Stack.Screen name="step3_source" />

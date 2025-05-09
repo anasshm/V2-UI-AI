@@ -22,25 +22,11 @@ const generateRange = (start: number, end: number, step: number = 1, unit: strin
 const heightsCm = generateRange(100, 250, 1, ' cm');
 const weightsKg = generateRange(30, 200, 1, ' kg');
 
-const heightsFtIn = () => {
-  const options = [];
-  for (let ft = 3; ft <= 7; ft++) {
-    for (let inch = 0; inch < 12; inch++) {
-      options.push(`${ft}'${inch}"`);
-    }
-  }
-  return options;
-};
-const weightsLbs = generateRange(60, 440, 1, ' lbs');
-
 const defaultMetricHeight = '165 cm';
 const defaultMetricWeight = '52 kg';
-const defaultImperialHeight = "5'5\"";
-const defaultImperialWeight = '115 lbs';
 
 export default function StepHeightWeightScreen() {
   const router = useRouter();
-  const [isMetric, setIsMetric] = useState(true);
 
   // Memoized renderItem function
   const renderWheelyItem = useCallback((optionText: string) => (
@@ -55,31 +41,21 @@ export default function StepHeightWeightScreen() {
   };
 
   const [selectedHeightIndex, setSelectedHeightIndex] = useState(() =>
-    calculateInitialIndex(isMetric ? heightsCm : heightsFtIn, isMetric ? defaultMetricHeight : defaultImperialHeight)
+    calculateInitialIndex(heightsCm, defaultMetricHeight)
   );
   const [selectedWeightIndex, setSelectedWeightIndex] = useState(() =>
-    calculateInitialIndex(isMetric ? weightsKg : weightsLbs, isMetric ? defaultMetricWeight : defaultImperialWeight)
+    calculateInitialIndex(weightsKg, defaultMetricWeight)
   );
 
-  const heightOptions = useMemo(() => (isMetric ? heightsCm : heightsFtIn()), [isMetric]);
-  const weightOptions = useMemo(() => (isMetric ? weightsKg : weightsLbs), [isMetric]);
-
-  // Effect for when isMetric changes
-  useEffect(() => {
-    setSelectedHeightIndex(
-      calculateInitialIndex(isMetric ? heightsCm : heightsFtIn, isMetric ? defaultMetricHeight : defaultImperialHeight)
-    );
-    setSelectedWeightIndex(
-      calculateInitialIndex(isMetric ? weightsKg : weightsLbs, isMetric ? defaultMetricWeight : defaultImperialWeight)
-    );
-  }, [isMetric]);
+  const heightOptions = useMemo(() => heightsCm, []);
+  const weightOptions = useMemo(() => weightsKg, []);
 
   const handleContinue = () => {
     // Logic to save height and weight can be added here (e.g., to state management or AsyncStorage)
     console.log('Selected Height:', heightOptions[selectedHeightIndex]);
     console.log('Selected Weight:', weightOptions[selectedWeightIndex]);
-    console.log('Units:', isMetric ? 'Metric' : 'Imperial');
-    router.push('/(onboarding)/step5_gender'); // Navigate to the next step
+    console.log('Units: Metric');
+    router.push('/(onboarding)/step_date_of_birth'); // Navigate to the new date of birth step
   };
 
   return (
@@ -93,28 +69,11 @@ export default function StepHeightWeightScreen() {
         </StyledText>
       </StyledView>
 
-      <StyledView className="flex-row items-center justify-center mb-8">
-        <StyledText className={`text-lg font-medium ${!isMetric ? 'text-gray-700' : 'text-gray-400'}`}>
-          Imperial
-        </StyledText>
-        <StyledSwitch
-          trackColor={{ false: '#d1d5db', true: '#2563eb' }} // gray-300, blue-600
-          thumbColor={isMetric ? '#ffffff' : '#ffffff'}
-          ios_backgroundColor="#e5e7eb" // gray-200
-          onValueChange={() => setIsMetric(previousState => !previousState)}
-          value={isMetric}
-          className="mx-3 scale-110"
-        />
-        <StyledText className={`text-lg font-medium ${isMetric ? 'text-gray-700' : 'text-gray-400'}`}>
-          Metric
-        </StyledText>
-      </StyledView>
-
       <StyledView className="flex-row justify-around w-full mb-10 px-5">
         <StyledView className="items-center w-2/5">
           <StyledText className="text-xl font-semibold mb-3 text-gray-700">Height</StyledText>
           <WheelPicker
-            key={`${isMetric ? 'metric' : 'imperial'}-height`}
+            key="metric-height"
             selectedIndex={selectedHeightIndex}
             options={heightOptions}
             onChange={(index) => setSelectedHeightIndex(index)}
@@ -128,7 +87,7 @@ export default function StepHeightWeightScreen() {
         <StyledView className="items-center w-2/5">
           <StyledText className="text-xl font-semibold mb-3 text-gray-700">Weight</StyledText>
           <WheelPicker
-            key={`${isMetric ? 'metric' : 'imperial'}-weight`}
+            key="metric-weight"
             selectedIndex={selectedWeightIndex}
             options={weightOptions}
             onChange={(index) => setSelectedWeightIndex(index)}
@@ -142,7 +101,7 @@ export default function StepHeightWeightScreen() {
 
       <StyledView className="w-full px-6 absolute bottom-10">
         <StyledTouchableOpacity 
-          className="bg-gray-800 p-4 rounded-full items-center"
+          className="bg-[#3A82F6] p-4 rounded-full items-center"
           onPress={handleContinue}
         >
           <StyledText className="text-white text-lg font-semibold">Continue</StyledText>
