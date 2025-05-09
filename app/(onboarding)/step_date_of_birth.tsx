@@ -2,6 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import WheelPicker from 'react-native-wheely';
 import { Stack, useRouter } from 'expo-router';
+import { useOnboarding } from '../OnboardingContext';
 
 // Helper to generate a range of numbers
 const generateRange = (start: number, end: number, step: number = 1, prefix: string = '', suffix: string = '') => {
@@ -29,6 +30,7 @@ const defaultYear = '2000'; // Changed default year
 
 export default function StepDateOfBirthScreen() {
   const router = useRouter();
+  const { setDateOfBirth } = useOnboarding();
 
   const renderWheelyItem = useCallback((optionText: string) => (
     <Text style={{ fontSize: 18, color: '#1C1C1E' }}>{optionText}</Text>
@@ -50,12 +52,20 @@ export default function StepDateOfBirthScreen() {
   );
 
   const handleContinue = () => {
-    const selectedDate = {
-      day: dayOptions[selectedDayIndex],
-      month: monthNames[selectedMonthIndex],
-      year: yearOptions[selectedYearIndex],
-    };
-    console.log('Selected Date of Birth:', selectedDate);
+    const day = dayOptions[selectedDayIndex];
+    const monthIndex = selectedMonthIndex; // Month index (0-11)
+    const year = yearOptions[selectedYearIndex];
+
+    // Format date as YYYY-MM-DD
+    // Month needs to be 1-indexed and padded with 0 if needed
+    const monthNumber = monthIndex + 1;
+    const formattedMonth = monthNumber < 10 ? `0${monthNumber}` : `${monthNumber}`;
+    const formattedDay = parseInt(day) < 10 ? `0${day}` : day;
+    const isoDateString = `${year}-${formattedMonth}-${formattedDay}`;
+
+    setDateOfBirth(isoDateString); // Save to context
+    console.log('Saved Date of Birth to context:', isoDateString);
+
     router.push('/(onboarding)/step5_gender'); // Next step after this new screen
   };
 
@@ -114,9 +124,10 @@ export default function StepDateOfBirthScreen() {
         </View>
       </View>
 
-      <View className="w-full px-6 absolute bottom-10">
-        <TouchableOpacity
-          className="bg-[#3A82F6] p-4 rounded-full items-center"
+      {/* Fixed Continue Button at the bottom, mimicking step5_gender.tsx */}
+      <View className="absolute bottom-1 left-0 right-0 px-7 py-10 bg-white border-t border-gray-200">
+        <TouchableOpacity 
+          className="bg-onboarding-primary py-5 px-4 rounded-full items-center"
           onPress={handleContinue}
         >
           <Text className="text-white text-lg font-semibold">Continue</Text>

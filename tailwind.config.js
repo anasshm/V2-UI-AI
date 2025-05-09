@@ -17,7 +17,8 @@ module.exports = {
         'protein': '#ff6b6b',
         'carbs': '#ff9f43',
         'fat': '#54a0ff',
-        'calories': '#ff6b6b'
+        'calories': '#ff6b6b',
+        'onboarding-primary': '#3A82F6', 
       },
       borderRadius: {
         'card': '16px'

@@ -98,34 +98,13 @@ function OnboardingHeader() {
   );
 }
 
-
+// --- Onboarding Layout Component ---
 export default function OnboardingLayout() {
   return (
-    <Stack
-      screenOptions={{
-        // Use our custom header component
-        header: () => <OnboardingHeader />,
-        // We still technically hide the default header's back button logic,
-        // as our custom one handles the press action.
-        // Setting headerBackVisible to false prevents the default rendering entirely.
-        headerBackVisible: false,
-        // Optionally, remove the shadow if the design requires it
-        headerShadowVisible: false,
-      }}
-    >
-       {/* Define screens within the onboarding flow */}
-       <Stack.Screen name="step_height_weight" />
-       <Stack.Screen name="step_date_of_birth" /> {/* Added new screen */}
-       <Stack.Screen name="step5_gender" />
-       <Stack.Screen name="step4_workouts" />
-       <Stack.Screen name="step3_source" />
-       <Stack.Screen name="step2_experience" />
-       <Stack.Screen name="step6_goal" />
-       <Stack.Screen name="step7_diet" />
-       <Stack.Screen name="step8_accomplishments" />
-       <Stack.Screen name="step9_obstacles" />
-       <Stack.Screen name="paywall" />
-       {/* Add other onboarding screens here if needed */}
+    <Stack screenOptions={{ header: () => <OnboardingHeader />, headerBackVisible: false, headerShadowVisible: false }}>
+      {ONBOARDING_STEPS.map(stepName => (
+        <Stack.Screen key={stepName} name={stepName} />
+      ))}
     </Stack>
   );
 }

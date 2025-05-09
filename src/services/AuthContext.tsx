@@ -1,16 +1,18 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Alert } from 'react-native';
 import { supabase, signInWithEmail, signUpWithEmail, signOut as supabaseSignOut, getCurrentUser, getCurrentSession } from './supabase';
+import { User, Session } from '@supabase/supabase-js'; // Import User and Session types
 
 // Define the shape of our auth context
 interface AuthContextType {
-  user: any | null;
-  session: any | null;
+  user: User | null;
+  session: Session | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any | null }>;
   signUp: (email: string, password: string, metadata?: { name?: string }) => Promise<{ error: any | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: any | null }>;
+  signInWithTestUser: (testEmail: string) => void; // Added for test user
 }
 
 // Create the context with default values
@@ -22,6 +24,7 @@ const AuthContext = createContext<AuthContextType>({
   signUp: async () => ({ error: null }),
   signOut: async () => {},
   resetPassword: async () => ({ error: null }),
+  signInWithTestUser: () => {}, // Added for test user
 });
 
 // Custom hook to use the auth context
@@ -29,8 +32,8 @@ export const useAuth = () => useContext(AuthContext);
 
 // Provider component that wraps the app and makes auth object available
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<any | null>(null);
-  const [session, setSession] = useState<any | null>(null);
+  const [user, setUser] = useState<User | null>(null); // Use User type
+  const [session, setSession] = useState<Session | null>(null); // Use Session type
   const [isLoading, setIsLoading] = useState(true);
 
   // Check if user is logged in on mount and set up auth state listener
@@ -146,6 +149,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Test user sign-in function
+  const signInWithTestUser = (testEmail: string) => {
+    console.log('Signing in with test user:', testEmail);
+    const mockUserId = `test-user-${Date.now()}`;
+    const mockUser: User = {
+      id: mockUserId,
+      app_metadata: { provider: 'email' },
+      user_metadata: { name: testEmail.split('@')[0] || 'Test User' },
+      aud: 'authenticated',
+      created_at: new Date().toISOString(),
+      email: testEmail,
+      // Add any other fields your app might expect on the user object
+    } as User; // Type assertion might be needed if not all User fields are mocked
+
+    // Create a simplified mock session
+    const mockSession: Session = {
+      access_token: `mock_access_token_${Date.now()}`,
+      refresh_token: `mock_refresh_token_${Date.now()}`,
+      expires_in: 3600,
+      token_type: 'bearer',
+      user: mockUser,
+    };
+
+    setUser(mockUser);
+    setSession(mockSession);
+    setIsLoading(false);
+    console.log('Test user session created:', { user: mockUser, session: mockSession });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -156,6 +188,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signUp,
         signOut,
         resetPassword,
+        signInWithTestUser, // Added to provider value
       }}
     >
       {children}

@@ -57,9 +57,9 @@ export default function Step5GenderScreen() {
 
       </ScrollView>
 
-      <View className="absolute bottom-0 left-0 right-0 p-10 bg-white border-t border-gray-200">
+      <View className="absolute bottom-1 left-0 right-0 px-7 py-10 bg-white border-t border-gray-200">
         <TouchableOpacity
-          className={`p-4 rounded-full items-center ${selectedGender ? 'bg-[#3A82F6]' : 'bg-gray-300'}`}
+          className={`py-5 px-4 rounded-full items-center ${selectedGender ? 'bg-onboarding-primary' : 'bg-gray-300'}`}
           onPress={goToNextStep}
           disabled={!selectedGender}
         >
@@ -74,5 +74,5 @@ export default function Step5GenderScreen() {
 const _STYLES = {
   optionBase: 'border-gray-200',
   optionUnselected: 'bg-gray-100',
-  optionSelected: 'bg-gray-900 border-gray-900',
+  optionSelected: 'bg-onboarding-primary border-onboarding-primary',
 };

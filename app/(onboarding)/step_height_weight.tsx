@@ -3,6 +3,7 @@ import { View, Text, Switch, TouchableOpacity } from 'react-native';
 import WheelPicker from 'react-native-wheely';
 import { styled } from 'nativewind';
 import { Stack, useRouter } from 'expo-router';
+import { useOnboarding } from '../OnboardingContext';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -27,6 +28,7 @@ const defaultMetricWeight = '52 kg';
 
 export default function StepHeightWeightScreen() {
   const router = useRouter();
+  const { setHeight, setWeight } = useOnboarding();
 
   // Memoized renderItem function
   const renderWheelyItem = useCallback((optionText: string) => (
@@ -51,10 +53,30 @@ export default function StepHeightWeightScreen() {
   const weightOptions = useMemo(() => weightsKg, []);
 
   const handleContinue = () => {
-    // Logic to save height and weight can be added here (e.g., to state management or AsyncStorage)
-    console.log('Selected Height:', heightOptions[selectedHeightIndex]);
-    console.log('Selected Weight:', weightOptions[selectedWeightIndex]);
-    console.log('Units: Metric');
+    const heightString = heightOptions[selectedHeightIndex]; // e.g., "165 cm"
+    const weightString = weightOptions[selectedWeightIndex]; // e.g., "52 kg"
+
+    // Parse value and unit
+    const heightValue = parseInt(heightString);
+    const heightUnit = heightString.includes('cm') ? 'cm' : 'ft'; // Assuming only cm or ft
+
+    const weightValue = parseInt(weightString);
+    const weightUnit = weightString.includes('kg') ? 'kg' : 'lbs'; // Assuming only kg or lbs
+
+    if (!isNaN(heightValue) && (heightUnit === 'cm' || heightUnit === 'ft')) {
+      setHeight({ value: heightValue, unit: heightUnit as 'cm' | 'ft' });
+      console.log('Saved Height to context:', { value: heightValue, unit: heightUnit });
+    } else {
+      console.error('Invalid height string:', heightString);
+    }
+
+    if (!isNaN(weightValue) && (weightUnit === 'kg' || weightUnit === 'lbs')) {
+      setWeight({ value: weightValue, unit: weightUnit as 'kg' | 'lbs' });
+      console.log('Saved Weight to context:', { value: weightValue, unit: weightUnit });
+    } else {
+      console.error('Invalid weight string:', weightString);
+    }
+    
     router.push('/(onboarding)/step_date_of_birth'); // Navigate to the new date of birth step
   };
 
@@ -99,9 +121,10 @@ export default function StepHeightWeightScreen() {
         </StyledView>
       </StyledView>
 
-      <StyledView className="w-full px-6 absolute bottom-10">
+      {/* Fixed Continue Button at the bottom, consistent with other onboarding screens */}
+      <StyledView className="absolute bottom-1 left-0 right-0 px-7 py-10 bg-white border-t border-gray-200">
         <StyledTouchableOpacity 
-          className="bg-[#3A82F6] p-4 rounded-full items-center"
+          className="bg-onboarding-primary py-5 px-4 rounded-full items-center"
           onPress={handleContinue}
         >
           <StyledText className="text-white text-lg font-semibold">Continue</StyledText>

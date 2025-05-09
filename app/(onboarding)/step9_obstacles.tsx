@@ -41,7 +41,7 @@ export default function Step9ObstaclesScreen() {
       <TouchableOpacity
         key={option.id}
         // Apply exact styling from step2
-        className={`flex-row items-center p-4 border rounded-lg mb-4 ${isSelected ? 'bg-blue-500 border-blue-500' : 'bg-white border-gray-300'}`}
+        className={`flex-row items-center p-4 border rounded-lg mb-4 ${isSelected ? 'bg-onboarding-primary border-onboarding-primary' : 'bg-white border-gray-300'}`}
         onPress={() => handleSelectObstacle(option.id)}
       >
         <Ionicons 
@@ -81,13 +81,13 @@ export default function Step9ObstaclesScreen() {
       </ScrollView>
 
       {/* Fixed Continue Button at the bottom */}
-      <View className="absolute bottom-0 left-0 right-0 p-10 bg-white border-t border-gray-200">
+      <View className="absolute bottom-1 left-0 right-0 px-7 py-10 bg-white border-t border-gray-200">
         <TouchableOpacity
-          className={`py-4 rounded-full items-center ${selectedObstacle ? 'bg-gray-900' : 'bg-gray-300'}`}
+          className={`py-5 px-4 rounded-full items-center ${selectedObstacle ? 'bg-onboarding-primary' : 'bg-gray-300'}`}
           onPress={goToNextStep}
           disabled={!selectedObstacle}
         >
-          <Text className="text-white text-lg font-semibold">Continue</Text>
+          <Text className={`text-lg font-semibold ${selectedObstacle ? 'text-white' : 'text-gray-500'}`}>Continue</Text>
         </TouchableOpacity>
       </View>
     </View>

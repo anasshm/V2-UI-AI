@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Switch, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Switch, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/src/services/AuthContext';
+import { useOnboarding } from '../OnboardingContext';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, signOut } = useAuth();
+  const { onboardingData, isLoading: isOnboardingDataLoading } = useOnboarding();
   
   // User data state
   const [userData, setUserData] = useState({
@@ -108,6 +110,39 @@ export default function ProfileScreen() {
               {userData.email && <Text className="text-text-secondary">{userData.email}</Text>}
             </View>
           </>
+        )}
+        
+        {/* Section for Onboarding Data */}
+        {user && (
+          <View className="mb-6">
+            <Text className="text-text-primary text-lg font-semibold px-4 mb-2">My Physical Info</Text>
+            <View className="bg-card-bg rounded-card border border-card-border mb-4">
+              {isOnboardingDataLoading ? (
+                <View className="p-4 items-center justify-center">
+                  <ActivityIndicator size="small" color="#4A90E2" />
+                </View>
+              ) : (
+                <>
+                  {renderSettingItem(
+                    'Birthday',
+                    onboardingData.dateOfBirth ? onboardingData.dateOfBirth : 'Not set'
+                  )}
+                  {renderSettingItem(
+                    'Height',
+                    onboardingData.height 
+                      ? `${onboardingData.height.value} ${onboardingData.height.unit}` 
+                      : 'Not set'
+                  )}
+                  {renderSettingItem(
+                    'Weight',
+                    onboardingData.weight 
+                      ? `${onboardingData.weight.value} ${onboardingData.weight.unit}` 
+                      : 'Not set'
+                  )}
+                </>
+              )}
+            </View>
+          </View>
         )}
         
         <View className="mb-6">
